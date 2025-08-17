@@ -8,36 +8,38 @@ The project directly addresses **Track 1: MASH** and the **InterSystems GenAI Ch
 
 ## ✨ Key Features
 
-This tool combines a classic machine learning model with a modern Retrieval-Augmented Generation (RAG) system to provide a dual-function clinical support dashboard.
+This project combines a classic machine learning model with a modern Retrieval-Augmented Generation (RAG) system to demonstrate a dual-function clinical support tool.
 
-### 1. Risk Prediction Calculator
--   **Purpose:** To quickly stratify a patient's risk of having advanced liver fibrosis based on simple, common lab results.
--   **Method:** Utilizes a pre-trained **Random Forest Classifier** model.
--   **Input:** Patient's Age, AST (U/L), ALT (U/L), and Platelet Count (x10^9/L).
--   **Output:** A calculated **FIB-4 Score**, a clear risk classification (**Low Risk** or **High Risk**), and a confidence score for the prediction.
+### 1. Risk Prediction Model
+-   **Purpose:** To stratify a patient's risk of having MASH based on a range of common clinical and demographic data.
+-   **Method:** An **XGBoost Classifier** model trained on the NHANES 2011-2018 dataset. The model's target variable is a proxy for MASH risk, where a Fatty Liver Index (FLI) score of >= 60 is classified as 'High Risk'.
+-   **Input:** The model uses a core set of demographic, laboratory, examination, and questionnaire variables (e.g., age, gender, ethnicity, glucose, HbA1c, lipids, liver enzymes, blood pressure).
+-   **Output:** A risk classification of **Low Risk** or **High Risk**.
+-   **Implementation:** See `notebook_risk_prediction.ipynb` for the complete data processing, training, evaluation, and model interpretation using SHAP.
 
 ### 2. AI Knowledge Assistant
 -   **Purpose:** To provide healthcare professionals with quick, accurate answers to questions about MASH diagnosis, management, and guidelines.
--   **Method:** Implements a **Retrieval-Augmented Generation (RAG)** pipeline using Google's Gemini LLM.
--   **Knowledge Base:** The AI's knowledge is strictly limited to the official documents provided for the hackathon, ensuring answers are contextually relevant and accurate.
--   **Functionality:** Users can ask questions in natural language (e.g., "What is the prevalence of MASH in Latin America?") and receive a detailed answer synthesized from the source documents.
+-   **Method:** A **Retrieval-Augmented Generation (RAG)** pipeline using Google's Gemini LLM.
+-   **Knowledge Base:** The AI's knowledge is strictly limited to a curated set of PDF documents, ensuring answers are contextually relevant and accurate.
+-   **Functionality:** Users can ask questions in natural language (e.g., "What are the key recommendations for the pharmacological treatment of MASH?") and receive a detailed answer synthesized from the source documents.
+-   **Implementation:** See `notebook_ai_assistant_FAISS.ipynb` for the setup of the vector store and the question-answering chain.
 
 ---
 
 ## 🛠️ Technology Stack
 
 -   **Backend & Modeling:** Python
--   **Machine Learning:** Scikit-learn, Pandas, NumPy
+-   **Machine Learning:** Scikit-learn, Pandas, NumPy, XGBoost, SHAP
 -   **Generative AI:** LangChain, Google Gemini API (`gemini-1.5-flash`)
--   **Vector Store:** FAISS (for local development)
+-   **Vector Store (Local):** FAISS
 -   **Embeddings:** Hugging Face Sentence Transformers (`all-MiniLM-L6-v2`)
--   **Web Framework:** Streamlit
+-   **Development Environment:** Jupyter Notebook
 
 ---
 
-## 🚀 Getting Started
+## 🚀 How to Run the Project
 
-Follow these steps to set up and run the project locally.
+Follow these steps to set up the project and run the notebooks locally.
 
 ### Prerequisites
 
@@ -49,26 +51,74 @@ Follow these steps to set up and run the project locally.
 ```bash
 git clone [https://github.com/YOUR_USERNAME/MASH-Assist-AI.git](https://github.com/YOUR_USERNAME/MASH-Assist-AI.git)
 cd MASH-Assist-AI
-2. Set Up the EnvironmentCreate and activate a virtual environment:# Create the environment
+```
+
+### 2. Set Up the Environment
+
+Create and activate a virtual environment:
+
+```bash
+# Create the environment
 python -m venv venv
 
-# Activate it (on macOS/Linux)
+# Activate on macOS/Linux
 source venv/bin/activate
 
-# On Windows
+# Activate on Windows
 # venv\Scripts\activate
-Install the required dependencies:pip install -r requirements.txt
-3. Configure API KeyCreate a file named .env in the root of the project directory and add your Google API key to it:GOOGLE_API_KEY=YOUR_API_KEY_HERE
-4. Run the ApplicationExecute the following command in your terminal:streamlit run app.py
-Your web browser will automatically open with the MASH-Assist AI application running.📂 Project StructureMASH-Assist-AI/
+```
+
+Install the required dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure API Key
+
+Create a file named `.env` in the root of the project directory and add your Google API key:
+
+```
+GOOGLE_API_KEY=YOUR_API_KEY_HERE
+```
+
+### 4. Run the Notebooks
+
+Launch Jupyter Notebook or JupyterLab to explore the project:
+
+```bash
+# To start Jupyter Notebook
+jupyter notebook
+```
+
+-   **To train the risk model:** Open and run the cells in `notebook_risk_prediction.ipynb`. This will process the raw data and save the trained model as `mash_risk_model.pkl`.
+-   **To test the AI assistant:** Open and run the cells in `notebook_ai_assistant_FAISS.ipynb`. This will build the vector store (if it doesn't exist) and allow you to ask questions against the knowledge base.
+
+---
+
+## 📂 Project Structure
+
+```
+MASH-Assist-AI/
 │
 ├── data/                     # Folder for raw NHANES data (.XPT files)
 ├── knowledge_base/           # Folder for PDF documents used by the RAG system
 ├── faiss_index/              # Saved FAISS vector store index
 │
-├── MASH-Assist-AI-Notebook.ipynb # Jupyter Notebook with data processing and model training
-├── mash_risk_model.joblib    # Saved machine learning model
-├── app.py                    # The main Streamlit application script
+├── notebook_risk_prediction.ipynb  # Notebook for data processing and model training
+├── notebook_ai_assistant_FAISS.ipynb # Notebook for the RAG AI Assistant
+├── mash_risk_model.pkl       # Saved machine learning model
 ├── requirements.txt          # List of Python dependencies
 ├── .env                      # File for API keys (not committed to Git)
 └── README.md                 # This file
+```
+
+---
+
+## 🔮 Next Steps
+
+-   **Develop a User Interface:** Build an interactive web application using **Streamlit** or Flask to host the risk calculator and AI assistant, making it accessible to end-users.
+-   **Implement a Scalable Vector Database:** Replace the local FAISS index with a more robust and scalable vector database solution like **InterSystems IRIS**, Pinecone, or ChromaDB for production environments.
+-   **Deploy the Application:** Package the models and application for deployment on a cloud service (e.g., AWS, Google Cloud, Heroku).
+-   **Expand the Knowledge Base:** Incorporate a wider range of clinical guidelines, research papers, and medical literature to enhance the AI assistant's expertise.
+-   **Refine the Prediction Model:** Experiment with different machine learning models or include more patient features to improve the accuracy and scope of the risk prediction.
