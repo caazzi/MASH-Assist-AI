@@ -12,7 +12,7 @@ This project combines a classic machine learning model with a modern Retrieval-A
 
 ### 1. Risk Prediction Model
 -   **Purpose:** To stratify a patient's risk of having MASH based on a range of common clinical and demographic data.
--   **Method:** An **XGBoost Classifier** model trained on the NHANES 2011-2018 dataset. The model's target variable is a proxy for MASH risk, where a Fatty Liver Index (FLI) score of >= 60 is classified as 'High Risk'.
+-   **Method:** An **XGBoost Classifier** model trained on the USA's National Health and Nutrition Examination Survey (NHANES) 2011-2018 dataset. The model's target variable is a proxy for MASH risk, where a Fatty Liver Index (FLI) score of >= 60 is classified as 'High Risk'.
 -   **Input:** The model uses a core set of demographic, laboratory, examination, and questionnaire variables (e.g., age, gender, ethnicity, glucose, HbA1c, lipids, liver enzymes, blood pressure).
 -   **Output:** A risk classification of **Low Risk** or **High Risk**.
 -   **Implementation:** See `notebook_risk_prediction.ipynb` for the complete data processing, training, evaluation, and model interpretation using SHAP.
@@ -101,13 +101,12 @@ jupyter notebook
 ```
 MASH-Assist-AI/
 │
-├── data/                     # Folder for raw NHANES data (.XPT files)
+├── nhanes_data/                     # Folder for raw NHANES data (.XPT files)
 ├── knowledge_base/           # Folder for PDF documents used by the RAG system
 ├── faiss_index/              # Saved FAISS vector store index
 │
 ├── notebook_risk_prediction.ipynb  # Notebook for data processing and model training
 ├── notebook_ai_assistant_FAISS.ipynb # Notebook for the RAG AI Assistant
-├── mash_risk_model.pkl       # Saved machine learning model
 ├── requirements.txt          # List of Python dependencies
 ├── .env                      # File for API keys (not committed to Git)
 └── README.md                 # This file
@@ -118,7 +117,7 @@ MASH-Assist-AI/
 ## 🔮 Next Steps
 
 -   **Develop a User Interface:** Build an interactive web application using **Streamlit** or Flask to host the risk calculator and AI assistant, making it accessible to end-users.
--   **Implement a Scalable Vector Database:** Replace the local FAISS index with a more robust and scalable vector database solution like **InterSystems IRIS**, Pinecone, or ChromaDB for production environments.
+-   **Implement a Scalable Vector Database:** Replace the local FAISS index with a more robust and scalable vector database solution like **InterSystems IRIS** for production environments.
 -   **Deploy the Application:** Package the models and application for deployment on a cloud service (e.g., AWS, Google Cloud, Heroku).
 -   **Expand the Knowledge Base:** Incorporate a wider range of clinical guidelines, research papers, and medical literature to enhance the AI assistant's expertise.
--   **Refine the Prediction Model:** Experiment with different machine learning models or include more patient features to improve the accuracy and scope of the risk prediction.
+-   **Refine the Prediction Model:** Experiment with different machine learning models or test more patient features to improve the accuracy and scope of the risk prediction.
